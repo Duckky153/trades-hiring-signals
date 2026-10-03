@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Ranks home-service shops by the hiring signals in their job postings, reading each posting's title and description. Synthetic data.">
+  <title>Trades Hiring Signals</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="topline">
+        <span class="badge">Synthetic data</span>
+        <span class="muted small" id="data-date">Data date: Sep 30, 2026</span>
+      </div>
+      <h1>Trades Hiring Signals</h1>
+      <p class="lede">Which home-service shops should a sales rep call this week, and why? This reads one export of public job postings from heating, cooling, plumbing and other trade shops, title and description, and scores each shop for fit and timing. It counts jobs, not listings, caps every signal, and sends unclear shops to a person instead of guessing.</p>
+      <p class="result" id="result" aria-live="polite">Reading the postings...</p>
+      <noscript><p>This page needs JavaScript to score the shops.</p></noscript>
+      <nav class="page-nav" aria-label="Pages and sections">
+        <a class="primary-link" href="segments.html">Where to look first: trades and metros &rarr;</a>
+        <a href="#held">Held for a person</a>
+        <a href="#excluded">Excluded</a>
+        <a href="#caps">Why caps matter</a>
+        <a href="#rules">Rules and weights</a>
+        <a href="#assumptions">Assumptions</a>
+        <a href="#questions">Open questions</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="ranking" aria-labelledby="ranking-title">
+        <div class="section-head">
+          <h2 id="ranking-title">Ranked shops</h2>
+          <p>Open a shop to see every signal, its points, the posting line behind it, a draft first line and two first-call questions.</p>
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Filter by tier"></div>
+        <div class="card table-wrap">
+          <table class="stack" id="rank-table">
+            <caption class="visually-hidden">Shops ranked by score</caption>
+            <thead>
+              <tr>
+                <th class="num" scope="col">#</th>
+                <th scope="col">Shop</th>
+                <th scope="col">Trade</th>
+                <th scope="col">Metro</th>
+                <th class="num" scope="col">Techs</th>
+                <th scope="col">Software</th>
+                <th class="num" scope="col">Score</th>
+                <th scope="col">Tier</th>
+                <th scope="col">Top reason</th>
+              </tr>
+            </thead>
+            <tbody id="rank-body"></tbody>
+          </table>
+        </div>
+        <p class="top-gap"><button type="button" class="btn" id="show-more" hidden>Show all shops</button></p>
+      </section>
+
+      <section id="held" aria-labelledby="held-title">
+        <div class="section-head">
+          <h2 id="held-title">Held for a person</h2>
+          <p>These shops might be worth a call, but something needs checking first. Bad records waste calls, so they don't get a tier until a person clears them.</p>
+        </div>
+        <div class="grid" id="held-list"></div>
+      </section>
+
+      <section id="excluded" aria-labelledby="excluded-title">
+        <div class="section-head">
+          <h2 id="excluded-title">Excluded</h2>
+          <p>The fit gates run before any scoring. These shops are out for now, with the reason.</p>
+        </div>
+        <ul class="card plain-list" id="excluded-list"></ul>
+      </section>
+
+      <section id="caps" aria-labelledby="caps-title">
+        <div class="section-head">
+          <h2 id="caps-title">Why caps matter</h2>
+          <p id="cap-summary"></p>
+        </div>
+        <div class="cap-grid" id="cap-grid"></div>
+      </section>
+
+      <section id="rules" aria-labelledby="rules-title">
+        <div class="section-head">
+          <h2 id="rules-title">The rules, in plain words</h2>
+          <p>They run in this order. The right column shows how many shops each rule touched with the current weights.</p>
+        </div>
+        <ol class="card rules" id="rules-list"></ol>
+        <details class="card weights" id="weights" open>
+          <summary>Weights (edit any number and the page re-ranks)</summary>
+          <div class="weights-body">
+            <div id="weights-form"></div>
+            <div class="weights-actions">
+              <button type="button" class="btn" id="weights-reset">Reset to defaults</button>
+              <span class="muted small" id="weights-state" aria-live="polite">Default weights.</span>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section id="assumptions" aria-labelledby="assumptions-title">
+        <div class="two-col">
+          <div class="card pad box assume">
+            <h2 id="assumptions-title">Assumptions</h2>
+            <ul>
+              <li>ServiceTitan shops are assumed to fit best, because the estimate and follow-up data already lives there. Other software scores lower, not zero.</li>
+              <li>A follow-up or inside-sales opening means the shop is about to pay a salary for work that software can take on. When the pay is posted, the detail view shows what that seat costs a year.</li>
+              <li>Technician counts come from careers-page text like "join our team of 26 techs", so they're approximate.</li>
+              <li>Hiring is not buying. A posting shows a shop is growing and where work is piling up. It doesn't show that the shop will buy anything.</li>
+              <li>A shop with no software named isn't treated as a bad fit. It gets no software points, and goes to a person if it would otherwise be a Call this week.</li>
+              <li>Hourly pay is turned into a yearly figure at 2,080 hours. Ages are counted from the data date, Sep 30, 2026.</li>
+            </ul>
+          </div>
+          <div class="card pad box" id="real-data">
+            <h2>What I'd need to run this on real data</h2>
+            <ul>
+              <li>The job boards and careers pages to read, and which metros matter.</li>
+              <li>A list of current customers to exclude, so nobody calls a shop that already buys.</li>
+              <li>The field-service software you support, and how well each one works, to set the software points.</li>
+            </ul>
+            <p class="muted small top-gap">Everything else here (the gates, the caps, the holds) runs the same way on real postings.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="questions" aria-labelledby="questions-title">
+        <div class="card pad questions">
+          <h2 id="questions-title">Questions I'd want answered</h2>
+          <p class="muted">Each rule above is a guess. These are the answers that would change it.</p>
+          <ol>
+            <li>When a shop names ServiceTitan in a job post, is that enough to call it a fit, or do you confirm the software another way first?</li>
+            <li>Is a shop hiring an estimate follow-up or inside-sales person a buyer for you, or a sign they've already solved follow-up with people?</li>
+            <li>Which predicts a good account better: technician count, or how many estimates a shop writes a month?</li>
+            <li>Do franchise locations buy on their own, or does it go through head office?</li>
+            <li>Should commercial work count at all, or only residential repair and replacement?</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built by Dakshit Raj with AI coding tools (Claude Code, Codex). All shops and postings are synthetic.</p>
+    </footer>
+  </div>
+
+  <dialog id="detail" aria-labelledby="detail-title">
+    <div class="dialog-head">
+      <div>
+        <h2 id="detail-title">Shop</h2>
+        <div class="facts" id="detail-facts"></div>
+      </div>
+      <button type="button" class="btn" id="detail-close">Close</button>
+    </div>
+    <div class="dialog-body" id="detail-body"></div>
+  </dialog>
+
+  <script src="data.js"></script>
+  <script src="signals.mjs"></script>
+  <script src="app.js"></script>
+</body>
+</html>

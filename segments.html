@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Rolls the same synthetic job postings up by trade and metro to show where to look first. Synthetic data.">
+  <title>Where to look first | Trades Hiring Signals</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="topline">
+        <span class="badge">Synthetic data</span>
+        <span class="muted small" id="data-date">Data date: Sep 30, 2026</span>
+      </div>
+      <h1>Where to look first</h1>
+      <p class="lede">The same postings and the same rules as the ranked list, rolled up by trade and metro. It shows which segments have the most shops that name ServiceTitan and are hiring someone to follow up on estimates, so a rep knows where to start before picking single shops.</p>
+      <p class="result" id="result" aria-live="polite">Rolling up the shops...</p>
+      <noscript><p>This page needs JavaScript to roll up the shops.</p></noscript>
+      <nav class="page-nav" aria-label="Pages and sections">
+        <a class="primary-link" href="index.html">&larr; Ranked shops</a>
+        <a href="#top-three">Top three</a>
+        <a href="#segments">All segments</a>
+        <a href="#seg-assumptions">Assumptions</a>
+        <a href="#seg-questions">Open questions</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="top-three" aria-labelledby="top-title">
+        <div class="section-head">
+          <h2 id="top-title">Top three segments, with an opening angle</h2>
+          <p>Each angle is built only from that segment's own numbers.</p>
+        </div>
+        <div class="angles" id="angles"></div>
+      </section>
+
+      <section id="segments" aria-labelledby="segments-title">
+        <div class="section-head">
+          <h2 id="segments-title">All segments</h2>
+          <p>Ranked by qualified shops that name ServiceTitan and are hiring for follow-up work, then by shops in Call this week. Uses the default weights from the ranked list.</p>
+        </div>
+        <div class="controls">
+          <fieldset class="segmented" id="group-by">
+            <legend class="visually-hidden">Group shops by</legend>
+            <label><input type="radio" name="group" value="trade-metro" checked><span>Trade and metro</span></label>
+            <label><input type="radio" name="group" value="trade-region"><span>Trade and region</span></label>
+            <label><input type="radio" name="group" value="trade"><span>Trade</span></label>
+            <label><input type="radio" name="group" value="metro"><span>Metro</span></label>
+          </fieldset>
+          <label class="check"><input type="checkbox" id="adjacent" checked> Include adjacent trades (electrical, roofing, pest)</label>
+        </div>
+        <div class="card table-wrap">
+          <table class="stack" id="segment-table">
+            <caption class="visually-hidden">Segments ranked</caption>
+            <thead>
+              <tr>
+                <th class="num" scope="col">#</th>
+                <th scope="col">Segment</th>
+                <th class="num" scope="col">Shops</th>
+                <th class="num" scope="col">Pass fit gates</th>
+                <th class="num" scope="col">Name ServiceTitan</th>
+                <th class="num" scope="col">Hiring follow-up</th>
+                <th class="num" scope="col">Median follow-up pay</th>
+                <th class="num" scope="col">Median techs</th>
+                <th class="num" scope="col">Qualified in Call this week</th>
+                <th scope="col">Why it ranks here</th>
+              </tr>
+            </thead>
+            <tbody id="segment-body"></tbody>
+          </table>
+        </div>
+        <p class="muted small top-gap">Shares of ServiceTitan and follow-up hiring are out of all shops in the segment. "Qualified in Call this week" is out of the shops that pass the fit gates. Median pay is the middle of each posted follow-up range, as a yearly figure.</p>
+      </section>
+
+      <section id="seg-assumptions" aria-labelledby="seg-assumptions-title">
+        <div class="card pad box assume">
+          <h2 id="seg-assumptions-title">Assumptions</h2>
+          <ul>
+            <li>Seasonality, as an assumption: HVAC demand peaks in summer and winter, and plumbing is steadier through the year. A late-September snapshot may catch HVAC shops between peaks, hiring for the winter rush. This page doesn't adjust for that.</li>
+            <li>A segment with one or two shops can rank high on a single good shop. Treat small segments as leads, not patterns.</li>
+            <li>Electrical, roofing and pest are adjacent trades: they write estimates too, but the follow-up work and the software differ. Use the toggle to leave them out.</li>
+            <li>Sun Belt here means Phoenix, Dallas, Tampa and Atlanta; Midwest means Columbus and Chicago; Northeast means Philadelphia and Northern New Jersey.</li>
+            <li>Hiring is not buying. A segment full of follow-up hires shows where the work is piling up, not who will buy.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="seg-questions" aria-labelledby="seg-questions-title">
+        <div class="card pad questions">
+          <h2 id="seg-questions-title">Questions I'd want answered</h2>
+          <ol>
+            <li>Which trades and metros are you selling into now, and which have you tried and dropped?</li>
+            <li>Do you price per technician, per location, or on revenue recovered?</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built by Dakshit Raj with AI coding tools (Claude Code, Codex). All shops and postings are synthetic.</p>
+    </footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="signals.mjs"></script>
+  <script src="segments.js"></script>
+</body>
+</html>
